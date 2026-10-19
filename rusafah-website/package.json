@@ -1,0 +1,24 @@
+{
+  "name": "rusafah-website",
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.26.1",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": ">=10 <11"
+  },
+  "scripts": {
+    "build": "pnpm site:build",
+    "typecheck": "pnpm --filter @rusafah/website typecheck",
+    "site:dev": "pnpm --filter @rusafah/website run dev",
+    "site:build": "pnpm --filter @rusafah/website run build",
+    "site:check": "pnpm --filter @rusafah/website run check",
+    "site:test": "pnpm --filter @rusafah/website run test",
+    "site:setup": "pnpm --filter @rusafah/website run setup",
+    "site:bundle": "pnpm --filter @rusafah/website run report:bundle"
+  },
+  "private": true,
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3"
+  }
+}

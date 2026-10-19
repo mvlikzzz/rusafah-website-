@@ -1,0 +1,307 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   RUSAFAH brand tokens — sampled from the approved Illustrator artboards.
+   Navy #002231 and cream #eee3d3 are the two grounds; gold #a4744b is the
+   single accent; the deep browns belong to the "what distinguishes us" band.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-navy-950: #001a26;
+  --color-navy-900: #002231;
+  --color-navy-800: #0a2f42;
+  --color-navy-700: #143344;
+  --color-navy-600: #2c4752;
+
+  --color-cream-50: #faf7f2;
+  --color-cream-100: #f4eee6;
+  --color-cream-200: #eee3d3;
+  --color-cream-300: #e2d4bf;
+  --color-cream-400: #d0c7ba;
+
+  --color-gold-200: #e6d6c1;
+  --color-gold-300: #d9c4ab;
+  --color-gold-400: #c9b094;
+  --color-gold-500: #a87c4e;
+  --color-gold-600: #a4744b;
+  --color-gold-700: #8a5f3a;
+
+  --color-brown-950: #180d07;
+  --color-brown-900: #24140c;
+  --color-brown-800: #3a2214;
+  --color-brown-700: #543522;
+  --color-espresso: #261509;
+
+  --color-status-available: #3aa655;
+  --color-status-sold: #c0392b;
+  --color-status-soon: #c9b094;
+
+  --font-sans: var(--font-rakik), "Noto Sans Arabic", "Segoe UI", system-ui, sans-serif;
+  --font-display: var(--font-alyamama), var(--font-rakik), serif;
+  --font-latin: var(--font-barlow), var(--font-rakik), Arial, sans-serif;
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2.25rem;
+
+  --shadow-card: 0 18px 40px -20px rgb(0 34 49 / 0.45);
+  --shadow-glow: 0 0 0 1px rgb(238 227 211 / 0.15), 0 20px 60px -20px rgb(0 0 0 / 0.6);
+
+  --breakpoint-3xl: 100rem;
+}
+
+/* Base --------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-cream-100 text-navy-900 antialiased;
+    font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga", "calt";
+    min-block-size: 100dvh;
+  }
+
+  /* Latin words and figures sit on the Latin face; Arabic keeps the brand face. */
+  .font-latin {
+    font-family: var(--font-latin);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+
+  ::selection {
+    background: rgb(168 124 78 / 0.35);
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+  }
+
+  /* iOS zooms into any field under 16px; keep phones at 16px minimum. */
+  @media (max-width: 767px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+      font-size: max(16px, 1em);
+    }
+  }
+
+  /* Long Latin strings (emails, URLs) must never widen the page. */
+  a[href^="mailto:"] {
+    overflow-wrap: anywhere;
+  }
+
+  img,
+  video {
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Layout helpers ------------------------------------------------------------ */
+@utility container-site {
+  inline-size: 100%;
+  max-inline-size: 80rem;
+  margin-inline: auto;
+  padding-inline: max(clamp(1.25rem, 5vw, 5rem), env(safe-area-inset-left), env(safe-area-inset-right));
+}
+
+@utility container-wide {
+  inline-size: 100%;
+  max-inline-size: 90rem;
+  margin-inline: auto;
+  padding-inline: max(clamp(1rem, 3vw, 2rem), env(safe-area-inset-left), env(safe-area-inset-right));
+}
+
+/* Calligraphic watermark layers used on cream and navy sections. */
+@utility watermark-dark {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("/images/brand/watermark-dark.png");
+    background-repeat: no-repeat;
+    background-size: min(120%, 1400px) auto;
+    background-position: center;
+    opacity: 0.08;
+  }
+}
+
+@utility watermark-light {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("/images/brand/watermark-light.png");
+    background-repeat: no-repeat;
+    background-size: min(120%, 1400px) auto;
+    background-position: center;
+    opacity: 0.07;
+  }
+}
+
+/* Monochrome brand marks are drawn with CSS masks so one asset takes any colour. */
+@utility mask-icon {
+  display: inline-block;
+  background-color: currentColor;
+  mask-image: var(--mask);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-image: var(--mask);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+/* Thin gold ornament line with a diamond, as drawn beside section titles. */
+@utility ornament-line {
+  position: relative;
+  display: inline-block;
+  inline-size: 3.5rem;
+  block-size: 1px;
+  background: currentColor;
+  opacity: 0.8;
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block-start: -3px;
+    inset-inline-end: -4px;
+    inline-size: 7px;
+    block-size: 7px;
+    background: currentColor;
+    transform: rotate(45deg);
+  }
+}
+
+@utility diamond {
+  display: inline-block;
+  inline-size: 0.45em;
+  block-size: 0.45em;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+/* Native select with the design's chevron, RTL-aware. */
+@utility select-brand {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%23a4744b' stroke-width='1.8' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: left 1rem center;
+  padding-inline-end: 1rem;
+  padding-inline-start: 2.5rem;
+}
+
+/* Scroll-snap track for the "latest projects" page. */
+@utility snap-page {
+  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+  block-size: 100dvh;
+}
+
+/* Horizontal snap track used by the mobile projects carousel. */
+@utility snap-x-track {
+  scroll-snap-type: x mandatory;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbars on horizontal carousels while keeping them scrollable. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Motion ------------------------------------------------------------------- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-rise {
+  animation: rise-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Map pins ------------------------------------------------------------------ */
+.rusafah-pin {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-latin);
+}
+.rusafah-pin__label {
+  background: var(--color-navy-900);
+  color: var(--color-cream-100);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+.rusafah-pin__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-cream-100);
+  border: 2px solid var(--color-navy-900);
+}
+.rusafah-pin.is-active .rusafah-pin__label,
+.rusafah-pin:hover .rusafah-pin__label {
+  background: var(--color-gold-600);
+  transform: translateY(-2px) scale(1.06);
+}
+.rusafah-pin:focus-visible .rusafah-pin__label {
+  outline: 2px solid var(--color-gold-500);
+  outline-offset: 2px;
+}
+.maplibregl-ctrl-attrib {
+  font-family: var(--font-latin);
+  font-size: 10px;
+}

@@ -1,0 +1,54 @@
+name: Website checks
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  website:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: rusafah_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d rusafah_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Disposable CI-only fixtures; never use these in a deployed environment.
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/rusafah_ci
+      SESSION_SECRET: ci-only-not-a-production-secret-at-least-32-characters
+      RATE_LIMIT_SALT: ci-only-disposable-rate-limit-salt
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      RUN_NOTIFICATION_WORKER: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm site:setup
+      - run: pnpm site:check
+      - run: pnpm site:build
+      - run: pnpm site:bundle

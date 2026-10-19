@@ -1,0 +1,10 @@
+node_modules/
+.env*
+!.env.example
+**/.next/
+**/*.tsbuildinfo
+**/coverage/
+**/test-results/
+**/playwright-report/
+**/public/uploads/
+.DS_Store
